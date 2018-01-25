@@ -18,10 +18,13 @@
 
 使用:
 
-```
+
 # 安装依赖
+```
 pip3 install html2text
+```
 
 # 运行
+```
 python3 dhtml2text.py
 ```
