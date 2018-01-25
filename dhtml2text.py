@@ -134,7 +134,7 @@ class LogUtils:
         self.__logs.clear()
 
         if self.__callback is not None:
-            self.__callback(self.__logs)
+            self.__callback(self.__logs, None)
 
 
 class Spider:
@@ -161,7 +161,10 @@ class Spider:
     def __downloading(self):
         contents = self.__get_contents()
         for item in contents:
-            self.__save_files(item.decode('utf-8'), item.decode('utf-8').split('/')[-1])
+            try:
+                self.__save_files(item.decode('utf-8'), item.decode('utf-8').split('/')[-1])
+            except UnicodeDecodeError:
+                pass
         self.__log_util.append('download successful!!!')
 
     def __get_contents(self):
@@ -181,7 +184,7 @@ class Spider:
             if 'http' not in file_url:
                 new_file_url = file_url
                 if '/' in file_url:
-                    new_file_url = file_url[1:]
+                    new_file_url = file_url.split('/')[-1]
 
                 if 'htm' in self.__siteURL:
                     last_slash_index = self.__siteURL.index(self.__siteURL.split('/')[-1])
@@ -189,13 +192,14 @@ class Spider:
                 else:
                     file_url = self.__siteURL + '/' + new_file_url
 
-            self.__log_util.append('the url is %s, write path is %s' % (file_url, file_path))
             try:
                 u = urllib.request.urlopen(file_url)
                 data = u.read()
                 f = open(file_path, 'wb')
                 f.write(data)
                 f.close()
+
+                self.__log_util.append('the url is %s, write path is %s' % (file_url, file_path))
             except(urllib.error.HTTPError, urllib.error.URLError, IOError):
                 pass
 
