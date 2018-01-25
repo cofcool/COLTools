@@ -8,7 +8,7 @@
 
 <!-- /code_chunk_output -->
 
-### dhtml2text
+## dhtml2text
 
 该脚本可以下载指定页面下的所有a标签对应的链接，也可把下载下来的html页面合并为纯文本文件。
 
@@ -19,12 +19,12 @@
 使用:
 
 
-# 安装依赖
+### 安装依赖
 ```
 pip3 install html2text
 ```
 
-# 运行
+### 运行
 ```
 python3 dhtml2text.py
 ```
