@@ -16,10 +16,10 @@ class DownloadTools:
     def __init__(self):
         self.__log_util = LogUtils()
         self.__setup()
-        self.__log_util.set_callback(self.__update_logs)
 
     def __start_download(self):
         self.__log_util.clear()
+        self.__log_util.set_callback(self.__update_logs)
 
         url = self.__htmlUrl.get()
         self.__spider = Spider(url, Spider.format_file_path(url, self.__write_path.get()), self.__log_util)
@@ -80,13 +80,13 @@ class DownloadTools:
 
         root.mainloop()
 
-    def __update_logs(self, logs):
+    def __update_logs(self, logs, _):
         self.__logs_var.set(logs)
 
 
 class Html2Text:
 
-    def __init__(self, base_dir, combined, log_util=None):
+    def __init__(self, base_dir, combined, log_util):
         self.__base_dir = base_dir
         self.__contents = os.listdir(base_dir)
         self.__contents.sort()
@@ -139,7 +139,7 @@ class LogUtils:
 
 class Spider:
 
-    def __init__(self, site_url, write_path, log_util=None):
+    def __init__(self, site_url, write_path, log_util):
         self.__siteURL = site_url
         self.__write_path = write_path
         self.__contents = []
@@ -200,7 +200,11 @@ class Spider:
                 pass
 
     def __get_page(self):
-        request = urllib.request.Request(self.__siteURL)
+        headers = {
+            'User': 'Agent: Mozilla / 5.0(X11;Ubuntu;Linux x86_64;rv: 57.0) Gecko / 20100101Firefox / 57.0',
+            'Accept': 'text / html, application / xhtml + xml, application / xml'
+        }
+        request = urllib.request.Request(self.__siteURL, headers=headers)
         response = urllib.request.urlopen(request)
 
         return response.read()
