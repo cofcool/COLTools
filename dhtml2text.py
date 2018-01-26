@@ -151,8 +151,8 @@ class Spider:
 
         try:
             os.mkdir(self.__write_path)
-        except FileExistsError:
-            pass
+        except FileExistsError as e:
+            self.__log_util.append(str(e))
 
         task_thread = threading.Thread(target=self.__downloading)
         task_thread.setDaemon(TRUE)
@@ -163,8 +163,8 @@ class Spider:
         for item in contents:
             try:
                 self.__save_files(item.decode('utf-8'), item.decode('utf-8').split('/')[-1])
-            except UnicodeDecodeError:
-                pass
+            except UnicodeDecodeError as e:
+                self.__log_util.append(str(e))
         self.__log_util.append('download successful!!!')
 
     def __get_contents(self):
@@ -200,8 +200,8 @@ class Spider:
                 f.close()
 
                 self.__log_util.append('the url is %s, write path is %s' % (file_url, file_path))
-            except(urllib.error.HTTPError, urllib.error.URLError, IOError):
-                pass
+            except(urllib.error.HTTPError, urllib.error.URLError, IOError) as e:
+                self.__log_util.append(str(e))
 
     def __get_page(self):
         headers = {
@@ -215,6 +215,9 @@ class Spider:
 
     @staticmethod
     def format_file_path(site_url, base_dir):
+        if len(base_dir) == 0:
+            return os.getcwd()
+
         return base_dir + '/' + site_url.split('/')[2] + '/'
 
 

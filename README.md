@@ -1,7 +1,7 @@
 # COLTools
 
 
-<!-- @import "[TOC]" {cmd="toc" depthFrom=3 depthTo=6 orderedList=false} -->
+<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=2 orderedList=false} -->
 <!-- code_chunk_output -->
 
 * [dhtml2text](#dhtml2text)
