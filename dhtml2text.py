@@ -186,11 +186,14 @@ class Spider:
                 if '/' in file_url:
                     new_file_url = file_url.split('/')[-1]
 
-                if 'htm' in self.__siteURL:
+                if 'htm' in self.__siteURL[-1:4]:
                     last_slash_index = self.__siteURL.index(self.__siteURL.split('/')[-1])
                     file_url = self.__siteURL[0:last_slash_index] + new_file_url
                 else:
-                    file_url = self.__siteURL + '/' + new_file_url
+                    if self.__siteURL[-1] is not '/':
+                        file_url = self.__siteURL + '/' + new_file_url
+                    else:
+                        file_url = self.__siteURL + new_file_url
 
             try:
                 u = urllib.request.urlopen(file_url)
