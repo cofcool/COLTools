@@ -149,10 +149,8 @@ class Spider:
         if len(self.__siteURL) == 0:
             return
 
-        try:
+        if not os.path.exists(self.__write_path):
             os.mkdir(self.__write_path)
-        except FileExistsError as e:
-            self.__log_util.append(str(e))
 
         task_thread = threading.Thread(target=self.__downloading)
         task_thread.setDaemon(TRUE)
