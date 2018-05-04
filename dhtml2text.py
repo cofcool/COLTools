@@ -9,7 +9,7 @@ from tkinter import *
 from tkinter.filedialog import askdirectory
 import html2text
 import threading
-
+import chardet
 
 class DownloadTools:
 
@@ -26,6 +26,8 @@ class DownloadTools:
         self.__spider.start_download()
 
     def __export2text(self):
+        self.__log_util.clear()
+        self.__log_util.set_callback(self.__update_logs)
         Html2Text(
             Spider.format_file_path(self.__htmlUrl.get(), self.__write_path.get()),
             self.__enabled_combined.get() == 1,
@@ -94,18 +96,35 @@ class Html2Text:
         self.__log_util = log_util
 
     def export2text(self):
+        task_thread = threading.Thread(target=self.__export2text)
+        task_thread.setDaemon(True)
+        task_thread.start()
+
+    def __export2text(self):
         self.__log_util.append('start export')
         combined_f = None
         if self.__combined:
             combined_f = open(self.__base_dir + '/' + 'html2text.txt', 'a')
 
         for file_name in self.__contents:
+            if not ('htm' in file_name.split('.')[-1]):
+                continue
+
             self.__log_util.append('export %s' % file_name)
-            html_f = open(self.__base_dir + '/' + file_name, 'r')
+            html_f = open(self.__base_dir + '/' + file_name, 'rb')
             html = html_f.read()
             html_f.close()
 
-            clean_text = html2text.html2text(html)
+            charset = chardet.detect(html)['encoding']
+            if (charset is None) or (charset is 'GB2312'):
+                """
+                注意⚠️
+                chardet会有几率把GB18030识别为GB2312
+                如果未识别，可使用其它工具识别，然后自行修改
+                """
+                charset = 'GB18030'
+
+            clean_text = html2text.html2text(html.decode(charset))
             combined_f.write(clean_text)
 
         combined_f.close()

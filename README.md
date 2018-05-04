@@ -22,6 +22,7 @@
 ### 安装依赖
 ```
 pip3 install html2text
+pip3 install chardet
 ```
 
 ### 运行
